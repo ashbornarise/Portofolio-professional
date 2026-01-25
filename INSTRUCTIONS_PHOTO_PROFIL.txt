@@ -1,0 +1,105 @@
+═══════════════════════════════════════════════════════════════════
+   INSTRUCTIONS POUR AJOUTER VOTRE PHOTO DE PROFIL
+═══════════════════════════════════════════════════════════════════
+
+📸 PHOTO À UTILISER
+───────────────────────────────────────────────────────────────────
+La photo de profil que vous m'avez envoyée (homme avec micro, costume)
+doit être sauvegardée dans le dossier:
+
+   📁 C:\Users\Clement AGBALENYO\Documents\Professionnal\Portofolio\images\
+
+Nommez-la: profile.png
+
+
+🔧 ÉTAPES POUR REMPLACER LES PHOTOS
+───────────────────────────────────────────────────────────────────
+
+1. Sauvegardez votre photo de profil dans images/profile.png
+
+2. Ouvrez index.html dans un éditeur de texte (Notepad++, VS Code, etc.)
+
+3. Cherchez ces lignes (Ctrl+F):
+
+   Ligne ~946:
+   <img src="images/page1_img4.png" alt="AGBALENYO Clement">
+
+   Remplacez par:
+   <img src="images/profile.png" alt="AGBALENYO Clement">
+
+   ──────────────────────────────────────────────────────
+
+   Ligne ~996:
+   <img src="images/page5_img1.jpeg" alt="About Me">
+
+   Remplacez par:
+   <img src="images/profile.png" alt="About Me">
+
+4. Sauvegardez le fichier (Ctrl+S)
+
+5. Rechargez la page dans votre navigateur (F5)
+
+
+📝 AUTRES EMPLACEMENTS POSSIBLES
+───────────────────────────────────────────────────────────────────
+
+Si vous voulez utiliser votre photo ailleurs, cherchez ces fichiers:
+
+• images/page1_img4.png  → Photo du héro (grande)
+• images/page3_img1.jpeg → Photo introduction
+• images/page5_img1.jpeg → Photo "À propos"
+• images/page7_img1.jpeg → Photo conférence
+• images/page8_img1.jpeg → Photo outdoor
+
+
+🎨 RECOMMANDATIONS
+───────────────────────────────────────────────────────────────────
+
+✅ Format idéal: PNG avec fond transparent
+✅ Dimensions: 1000x1000px ou plus (carré)
+✅ Poids: < 500 KB pour un chargement rapide
+✅ Qualité: Haute résolution, bien éclairée
+
+
+🔍 VÉRIFICATION RAPIDE
+───────────────────────────────────────────────────────────────────
+
+Après avoir fait les modifications:
+
+1. Ouvrez index.html dans votre navigateur
+2. Vérifiez la section "Accueil" (Hero)
+3. Vérifiez la section "À Propos"
+4. Vérifiez la galerie photo
+
+Votre photo devrait apparaître partout!
+
+
+💡 ASTUCE RAPIDE
+───────────────────────────────────────────────────────────────────
+
+Pour remplacer TOUTES les occurrences d'un coup:
+
+1. Ouvrez index.html dans VS Code ou Notepad++
+2. Appuyez sur Ctrl+H (Rechercher et Remplacer)
+3. Cherchez: images/page1_img4.png
+4. Remplacez par: images/profile.png
+5. Cliquez sur "Remplacer tout"
+6. Sauvegardez!
+
+
+📧 BESOIN D'AIDE?
+───────────────────────────────────────────────────────────────────
+
+Si vous avez des difficultés, n'hésitez pas!
+
+Les 56 images du PDF sont déjà extraites et disponibles dans:
+📁 images/
+
+Vous pouvez utiliser n'importe laquelle pour remplacer les photos
+actuelles en suivant les étapes ci-dessus.
+
+
+═══════════════════════════════════════════════════════════════════
+   RÉSUMÉ: Sauvegardez votre photo en images/profile.png
+           et remplacez les chemins dans index.html
+═══════════════════════════════════════════════════════════════════

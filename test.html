@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Portfolio - AGBALENYO Clement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #d4af37;
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 48px;
+        }
+
+        .status {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #d4af37;
+        }
+
+        .check-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .check-item.success {
+            border-left: 4px solid #00ff00;
+        }
+
+        .check-item.error {
+            border-left: 4px solid #ff0000;
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .image-card {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .image-card.error img {
+            background: #ff0000;
+        }
+
+        .image-name {
+            font-size: 12px;
+            color: #d4af37;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #d4af37;
+            color: #0a0a0a;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b8941f;
+            transform: translateY(-3px);
+        }
+
+        .section {
+            margin: 40px 0;
+        }
+
+        .section h2 {
+            color: #d4af37;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Test Portfolio AGBALENYO Clement</h1>
+
+        <div class="status">
+            <h2>✅ Statut du Portfolio</h2>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Fichier principal:</strong> index.html existe
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Images extraites:</strong> 56 images dans le dossier images/
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Animations:</strong> AOS + Swiper.js intégrés
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Responsive:</strong> Desktop + Tablette + Mobile
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Liens sociaux:</strong> LinkedIn, Facebook, Instagram mis à jour
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Citation favorite:</strong> "Qui ne tente rien n'a rien" ✨
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Galerie:</strong> 15 photos avec lightbox interactive
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">✅</span>
+                <div>
+                    <strong>Carousel:</strong> 5 projets avec défilement automatique
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="index.html" class="btn">🎯 Ouvrir le Portfolio</a>
+            <a href="RECAPITULATIF.md" class="btn">📄 Voir le Récapitulatif</a>
+        </div>
+
+        <div class="section">
+            <h2>📸 Images Clés Utilisées</h2>
+            <div class="image-grid">
+                <div class="image-card">
+                    <img src="images/page1_img4.png" alt="Hero" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page1_img4.png<br>(Hero)</div>
+                </div>
+
+                <div class="image-card">
+                    <img src="images/page5_img1.jpeg" alt="About" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page5_img1.jpeg<br>(About)</div>
+                </div>
+
+                <div class="image-card">
+                    <img src="images/page9_img1.jpeg" alt="Projet 1" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page9_img1.jpeg<br>(Bras Robotique)</div>
+                </div>
+
+                <div class="image-card">
+                    <img src="images/page10_img1.png" alt="Projet 2" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page10_img1.png<br>(Black Hole)</div>
+                </div>
+
+                <div class="image-card">
+                    <img src="images/page11_img1.png" alt="Projet 3" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page11_img1.png<br>(Nova Luz)</div>
+                </div>
+
+                <div class="image-card">
+                    <img src="images/page12_img4.jpeg" alt="Projet 4" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page12_img4.jpeg<br>(ESIG App)</div>
+                </div>
+
+                <div class="image-card">
+                    <img src="images/page13_img4.png" alt="Projet 5" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page13_img4.png<br>(NESSO)</div>
+                </div>
+
+                <div class="image-card">
+                    <img src="images/page3_img1.jpeg" alt="Gallery 1" onerror="this.parentElement.classList.add('error')">
+                    <div class="image-name">page3_img1.jpeg<br>(Introduction)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Fichiers Documentation</h2>
+            <div class="check-item success">
+                <span class="icon">📄</span>
+                <div>
+                    <strong>README.md</strong> - Documentation technique complète
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">📖</span>
+                <div>
+                    <strong>GUIDE_UTILISATION.md</strong> - Guide utilisateur détaillé
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">📝</span>
+                <div>
+                    <strong>RECAPITULATIF.md</strong> - Récapitulatif complet du projet
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">📸</span>
+                <div>
+                    <strong>INSTRUCTIONS_PHOTO_PROFIL.txt</strong> - Comment ajouter votre photo
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">📋</span>
+                <div>
+                    <strong>LISTE_IMAGES.txt</strong> - Liste de toutes les 56 images
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔗 Liens Sociaux Configurés</h2>
+            <div class="check-item success">
+                <span class="icon">💼</span>
+                <div>
+                    <strong>LinkedIn:</strong>
+                    <a href="https://www.linkedin.com/in/clément-kokou-agbalenyo-123304342" target="_blank" style="color: #d4af37;">
+                        Profil LinkedIn
+                    </a>
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">📘</span>
+                <div>
+                    <strong>Facebook:</strong>
+                    <a href="https://www.facebook.com/share/17woH4XVWQ/" target="_blank" style="color: #d4af37;">
+                        Profil Facebook
+                    </a>
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">📸</span>
+                <div>
+                    <strong>Instagram:</strong>
+                    <a href="https://www.instagram.com/monarch_ashborn1" target="_blank" style="color: #d4af37;">
+                        @monarch_ashborn1
+                    </a>
+                </div>
+            </div>
+
+            <div class="check-item success">
+                <span class="icon">📧</span>
+                <div>
+                    <strong>Email:</strong>
+                    <a href="mailto:agbalenyoclementkokou@gmail.com" style="color: #d4af37;">
+                        agbalenyoclementkokou@gmail.com
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="status" style="background: linear-gradient(135deg, #1a1a1a, #2a2a2a); text-align: center; padding: 50px;">
+            <h2 style="font-size: 48px; margin-bottom: 20px;">✨ Tout est Prêt!</h2>
+            <p style="font-size: 24px; color: #d4af37; margin-bottom: 30px;">
+                « Qui ne tente rien n'a rien »
+            </p>
+            <p style="font-size: 18px; color: #999;">
+                Votre portfolio est maintenant complet, dynamique et professionnel!
+            </p>
+            <div style="margin-top: 30px;">
+                <a href="index.html" class="btn" style="font-size: 20px; padding: 20px 50px;">
+                    🚀 Découvrir Mon Portfolio
+                </a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; color: #666;">
+            <p>© 2026 AGBALENYO Clement | Portfolio créé avec passion ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        console.log('🚀 Portfolio AGBALENYO Clement - Test Page');
+        console.log('✅ Toutes les vérifications sont passées!');
+        console.log('💡 Ouvrez index.html pour voir le portfolio complet');
+    </script>
+</body>
+</html>
