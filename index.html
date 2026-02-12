@@ -1782,20 +1782,35 @@
 
             .nav-menu {
                 position: fixed;
-                top: 80px;
+                top: 70px;
                 right: -100%;
-                width: 300px;
-                height: calc(100vh - 80px);
+                width: 280px;
+                max-width: 85vw;
+                height: calc(100vh - 70px);
                 background: rgba(10, 10, 10, 0.98);
                 backdrop-filter: blur(10px);
                 flex-direction: column;
-                padding: 40px;
+                padding: 30px;
                 transition: right 0.3s ease;
                 border-left: 1px solid rgba(212, 175, 55, 0.2);
+                z-index: 9999;
+                overflow-y: auto;
             }
 
             .nav-menu.active {
                 right: 0;
+            }
+
+            /* Overlay when menu is open */
+            body.menu-open::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
             }
 
             .burger {
@@ -1908,6 +1923,190 @@
             .footer {
                 padding: 30px 20px;
             }
+        }
+
+        /* ===== RESPONSIVE FIXES ===== */
+
+        /* Very small devices (320px and up) */
+        @media (max-width: 375px) {
+            .hero-title {
+                font-size: clamp(40px, 11vw, 60px);
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+            }
+
+            .hero-description {
+                font-size: 13px;
+            }
+
+            .hero-image-container {
+                max-width: 280px;
+                height: 350px;
+            }
+
+            .hero-left {
+                padding: 90px 15px 30px;
+            }
+
+            .hero-right {
+                padding: 30px 15px 50px;
+            }
+
+            .hero-social {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .social-link {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .hero-cta {
+                padding: 12px 24px;
+                font-size: 14px;
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .section-subtitle {
+                font-size: 14px;
+            }
+
+            .navbar {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .nav-menu {
+                width: 100%;
+                right: -100%;
+            }
+
+            .quote-text {
+                font-size: 24px;
+            }
+
+            .loader-logo {
+                font-size: 50px;
+            }
+
+            .progress-bar {
+                width: 150px;
+            }
+        }
+
+        /* Skills grid responsive */
+        @media (max-width: 768px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .skill-card {
+                padding: 25px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .contact-form {
+                order: 2;
+            }
+
+            .contact-info {
+                order: 1;
+            }
+        }
+
+        /* Gallery responsive */
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        /* Fix for horizontal overflow */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Fix images overflow */
+        img, video {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Fix hero on landscape mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding-top: 80px;
+            }
+
+            .hero-image-container {
+                height: 300px;
+            }
+        }
+
+        /* Better touch targets for mobile */
+        @media (max-width: 768px) {
+            .nav-menu a {
+                padding: 15px 0;
+                display: block;
+                font-size: 16px;
+            }
+
+            .burger {
+                padding: 10px;
+                margin: -10px;
+            }
+
+            .btn-primary, .hero-cta {
+                min-height: 48px;
+                display: inline-flex;
+                align-items: center;
+            }
+        }
+
+        /* Experience section responsive */
+        @media (max-width: 768px) {
+            .experience-container {
+                grid-template-columns: 1fr;
+            }
+
+            .experience-card {
+                padding: 20px;
+            }
+        }
+
+        /* Fix text wrapping */
+        .hero-title, .section-title, .quote-text {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
     </style>
 </head>
@@ -2665,18 +2864,38 @@
 
     <!-- Main JavaScript -->
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
+        // Initialize AOS with fallback
+        try {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 1000,
+                    once: true,
+                    offset: 100
+                });
+            }
+        } catch (e) {
+            console.warn('AOS not loaded:', e);
+        }
+
+        // Loading Screen - with guaranteed hide
+        function hideLoader() {
+            const loader = document.querySelector('.loader');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('hidden');
+            }
+        }
+
+        // Hide loader when page loads
+        window.addEventListener('load', () => {
+            setTimeout(hideLoader, 1500);
         });
 
-        // Loading Screen
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.loader').classList.add('hidden');
-            }, 2000);
+        // Fallback: Force hide loader after 4 seconds maximum (in case CDN fails)
+        setTimeout(hideLoader, 4000);
+
+        // Also hide on DOMContentLoaded as backup
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(hideLoader, 2500);
         });
 
         // Navbar Scroll Effect
@@ -2697,44 +2916,64 @@
         burger.addEventListener('click', () => {
             burger.classList.toggle('active');
             navMenu.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
         });
 
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 burger.classList.remove('active');
                 navMenu.classList.remove('active');
+                document.body.classList.remove('menu-open');
             });
         });
 
-        // Swiper Initialization
-        const swiper = new Swiper('.projectsSwiper', {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 1,
-                },
-                768: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 3,
-                },
-            },
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navMenu.classList.contains('active') &&
+                !navMenu.contains(e.target) &&
+                !burger.contains(e.target)) {
+                burger.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
         });
+
+        // Swiper Initialization with fallback
+        let swiper = null;
+        try {
+            if (typeof Swiper !== 'undefined') {
+                swiper = new Swiper('.projectsSwiper', {
+                    slidesPerView: 1,
+                    spaceBetween: 30,
+                    loop: true,
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    breakpoints: {
+                        640: {
+                            slidesPerView: 1,
+                        },
+                        768: {
+                            slidesPerView: 2,
+                        },
+                        1024: {
+                            slidesPerView: 3,
+                        },
+                    },
+                });
+            }
+        } catch (e) {
+            console.warn('Swiper not loaded:', e);
+        }
 
         // Scroll To Top Button
         const scrollTopBtn = document.getElementById('scrollTop');
