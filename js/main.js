@@ -311,7 +311,7 @@ document.addEventListener('click', (e) => {
 // Load saved preferences
 function loadPreferences() {
     const theme = localStorage.getItem('theme') || 'dark';
-    const lang = localStorage.getItem('language') || 'fr';
+    const lang = localStorage.getItem('language') || 'en';
     const animations = localStorage.getItem('animations') !== 'false';
     const smoothScroll = localStorage.getItem('smoothScroll') !== 'false';
 
@@ -434,6 +434,10 @@ const translations = {
         project4Desc: 'Création d\'une application pour rationaliser la gestion de projets et d\'outils dans l\'atelier de l\'école ESIG.',
         project5Title: 'NESSO - Entreprise d\'Innovation',
         project5Desc: 'Fondateur et CEO de NESSO, entreprise axée sur le développement de solutions technologiques avancées en génie mécanique.',
+        project6Title: 'Assemblage Mécanique Final',
+        project6Desc: 'Vidéo démonstrant le processus d\'assemblage mécanique complet d\'un projet, de la conception CAO à la réalisation finale.',
+        project7Title: 'RelaxVest - Gilet de Massage Intelligent',
+        project7Desc: 'Conception et développement d\'un gilet de massage connecté avec application mobile de contrôle Bluetooth. Chef de projet, développeur de l\'application et concepteur du produit, du prototype à la livraison finale.',
 
         // Gallery Section
         galleryTitle: 'Galerie Photos',
@@ -531,6 +535,10 @@ const translations = {
         project4Desc: 'Creating an application to streamline project and tool management in the ESIG school workshop.',
         project5Title: 'NESSO - Innovation Company',
         project5Desc: 'Founder and CEO of NESSO, a company focused on developing advanced technological solutions in mechanical engineering.',
+        project6Title: 'Final Mechanical Assembly',
+        project6Desc: 'Video demonstrating the complete mechanical assembly process of a project, from CAD design to final realization.',
+        project7Title: 'RelaxVest - Smart Massage Vest',
+        project7Desc: 'Design and development of a connected massage vest with a Bluetooth mobile control app. Project leader, app developer and product designer, from prototype to final delivery.',
 
         // Gallery Section
         galleryTitle: 'Photo Gallery',
@@ -675,7 +683,9 @@ function applyLanguage(lang) {
         { title: t.project2Title, desc: t.project2Desc },
         { title: t.project3Title, desc: t.project3Desc },
         { title: t.project4Title, desc: t.project4Desc },
-        { title: t.project5Title, desc: t.project5Desc }
+        { title: t.project5Title, desc: t.project5Desc },
+        { title: t.project6Title, desc: t.project6Desc },
+        { title: t.project7Title, desc: t.project7Desc }
     ];
     projectSlides.forEach((slide, i) => {
         if (projData[i]) {
@@ -699,7 +709,9 @@ function applyLanguage(lang) {
         'Design d\'un vélo sur SolidWorks', 'Projet Mécanique - Vidéo',
         'ANSYS Certification', 'AGBALENYO Clement - Ansys Certification',
         'Nova Luz - Label Musical', 'Application Gestion Atelier ESIG',
-        'NESSO - Business Presentation', 'Formation & Instruction'
+        'NESSO - Business Presentation', 'Formation & Instruction',
+        'RelaxVest - Application Mobile', 'RelaxVest - Interface de Contrôle',
+        'RelaxVest - Prototype Électronique', 'RelaxVest - Équipe & Produit Final'
     ];
     const captionsEn = [
         'Robotic Arm - Inter-University Pitch', 'Robotic Arm Project - Partners',
@@ -708,7 +720,9 @@ function applyLanguage(lang) {
         'Bicycle Design on SolidWorks', 'Mechanical Project - Video',
         'ANSYS Certification', 'AGBALENYO Clement - Ansys Certification',
         'Nova Luz - Music Label', 'ESIG Workshop Management App',
-        'NESSO - Business Presentation', 'Training & Instruction'
+        'NESSO - Business Presentation', 'Training & Instruction',
+        'RelaxVest - Mobile App', 'RelaxVest - Control Interface',
+        'RelaxVest - Electronic Prototype', 'RelaxVest - Team & Final Product'
     ];
     const captions = lang === 'fr' ? captionsFr : captionsEn;
     galleryCaptions.forEach((cap, i) => {
@@ -753,8 +767,8 @@ function applyLanguage(lang) {
     // Contact cards info
     const contactCards = document.querySelectorAll('.contact-card');
     const contactInfos = lang === 'fr'
-        ? ['Discutons directement', 'agbalenyoclementkokou@gmail.com', 'Mon profil professionnel', '@monarch_ashborn1']
-        : ['Let\'s chat directly', 'agbalenyoclementkokou@gmail.com', 'My professional profile', '@monarch_ashborn1'];
+        ? ['Discutons directement', 'agbalenyoclementkokou@gmail.com', 'Mon profil professionnel', '@monarch_ashborn1', 'Mon profil Facebook', 'AshbornArise']
+        : ['Let\'s chat directly', 'agbalenyoclementkokou@gmail.com', 'My professional profile', '@monarch_ashborn1', 'My Facebook profile', 'AshbornArise'];
     contactCards.forEach((card, i) => {
         const info = card.querySelector('.contact-card-info');
         if (info && contactInfos[i]) info.textContent = contactInfos[i];
@@ -813,5 +827,29 @@ function enableSmoothScroll() {
 
 // Load preferences on page load
 loadPreferences();
+
+// About Video: Click-to-play
+const aboutVideoWrapper = document.getElementById('aboutVideoWrapper');
+const aboutVideo = document.getElementById('aboutVideo');
+const aboutPlayBtn = document.getElementById('aboutPlayBtn');
+
+if (aboutVideoWrapper && aboutVideo && aboutPlayBtn) {
+    aboutVideoWrapper.addEventListener('click', () => {
+        if (aboutVideo.paused) {
+            aboutVideo.play();
+            aboutPlayBtn.style.opacity = '0';
+            aboutPlayBtn.style.pointerEvents = 'none';
+        } else {
+            aboutVideo.pause();
+            aboutPlayBtn.style.opacity = '1';
+            aboutPlayBtn.style.pointerEvents = 'auto';
+        }
+    });
+
+    aboutVideo.addEventListener('ended', () => {
+        aboutPlayBtn.style.opacity = '1';
+        aboutPlayBtn.style.pointerEvents = 'auto';
+    });
+}
 
 console.log('%c⚙️ Settings Panel Ready!', 'color: #d4af37; font-size: 14px; font-weight: bold;');
