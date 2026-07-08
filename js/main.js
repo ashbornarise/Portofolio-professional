@@ -1,16 +1,3 @@
-// Initialize AOS with fallback
-try {
-    if (typeof AOS !== 'undefined') {
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
-        });
-    }
-} catch (e) {
-    console.warn('AOS not loaded:', e);
-}
-
 // Loading Screen - with guaranteed hide
 function hideLoader() {
     const loader = document.querySelector('.loader');
@@ -34,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Optimized single scroll handler (debounced)
 const navbar = document.querySelector('.navbar');
+const heroLeftEl = document.querySelector('.hero-left');
+const footerBannerImgEl = document.querySelector('.footer-banner-img');
 let ticking = false;
 window.addEventListener('scroll', () => {
     if (!ticking) {
@@ -53,6 +42,22 @@ window.addEventListener('scroll', () => {
                     scrollTopBtn.classList.add('visible');
                 } else {
                     scrollTopBtn.classList.remove('visible');
+                }
+            }
+
+            // Light parallax - profile photo (hero)
+            if (heroLeftEl) {
+                const heroOffset = Math.min(scrollY * 0.06, 30);
+                heroLeftEl.style.transform = `translateY(${heroOffset}px)`;
+            }
+
+            // Light parallax - footer banner photo
+            if (footerBannerImgEl) {
+                const rect = footerBannerImgEl.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+                    const bannerOffset = (progress - 0.5) * 30;
+                    footerBannerImgEl.style.transform = `scale(1.08) translateY(${bannerOffset}px)`;
                 }
             }
 
@@ -204,18 +209,177 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Add hover effect to cards
-const cards = document.querySelectorAll('.skill-card, .experience-card, .project-card');
-cards.forEach(card => {
-    card.addEventListener('mouseenter', function () {
-        this.style.transform = 'translateY(-10px) scale(1.02)';
+// 3D Tilt Effect on Project Cards (lightweight, vanilla JS, no library)
+function initProjectTilt() {
+    const tiltEls = document.querySelectorAll('.projectsSwiper .swiper-slide');
+    const maxTilt = 8;
+
+    tiltEls.forEach(el => {
+        function applyTilt(clientX, clientY) {
+            const rect = el.getBoundingClientRect();
+            const px = clientX - rect.left;
+            const py = clientY - rect.top;
+            const rotateY = ((px - rect.width / 2) / (rect.width / 2)) * maxTilt;
+            const rotateX = -((py - rect.height / 2) / (rect.height / 2)) * maxTilt;
+            el.style.transition = 'transform 0.05s linear';
+            el.style.transform = `perspective(900px) translateY(-6px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            el.style.setProperty('--mx', (px / rect.width) * 100 + '%');
+            el.style.setProperty('--my', (py / rect.height) * 100 + '%');
+        }
+
+        function resetTilt() {
+            el.style.transition = 'transform 0.4s ease';
+            el.style.transform = 'perspective(900px) translateY(0) rotateX(0) rotateY(0)';
+        }
+
+        el.addEventListener('mousemove', (e) => applyTilt(e.clientX, e.clientY));
+        el.addEventListener('mouseleave', resetTilt);
+        el.addEventListener('touchstart', (e) => {
+            if (e.touches[0]) applyTilt(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        el.addEventListener('touchmove', (e) => {
+            if (e.touches[0]) applyTilt(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        el.addEventListener('touchend', resetTilt);
     });
-    card.addEventListener('mouseleave', function () {
-        this.style.transform = 'translateY(0) scale(1)';
+}
+initProjectTilt();
+
+// Cursor-tracked mirror sheen on skill cards
+document.querySelectorAll('.skill-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width) * 100 + '%');
+        card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height) * 100 + '%');
     });
 });
 
-// Parallax removed for performance optimization
+// ==========================================
+// CINEMATIC 3D MOTION (GSAP + ScrollTrigger)
+// Scroll-linked 3D reveals that reverse when scrolling back up,
+// plus mouse-driven parallax and continuous icon rotation.
+// ==========================================
+let motionInitialized = false;
+let iconLoopTweens = [];
+
+function initScrollReveals() {
+    document.querySelectorAll('[data-aos]').forEach(el => {
+        const type = el.getAttribute('data-aos');
+        const delayMs = parseInt(el.getAttribute('data-aos-delay') || '0', 10);
+        let from = { opacity: 0, y: 70, rotateX: -18, transformPerspective: 800 };
+
+        if (type === 'fade-right') from = { opacity: 0, x: -70, rotateY: -20, transformPerspective: 800 };
+        else if (type === 'fade-left') from = { opacity: 0, x: 70, rotateY: 20, transformPerspective: 800 };
+        else if (type === 'zoom-in') from = { opacity: 0, scale: 0.75, rotateZ: -3 };
+
+        gsap.set(el, from);
+
+        ScrollTrigger.create({
+            trigger: el,
+            start: 'top 88%',
+            end: 'top 40%',
+            onEnter: () => gsap.to(el, {
+                opacity: 1, x: 0, y: 0, rotateX: 0, rotateY: 0, rotateZ: 0, scale: 1,
+                duration: 0.9, delay: delayMs / 1000, ease: 'back.out(1.5)',
+                overwrite: true, clearProps: 'transform'
+            }),
+            onLeaveBack: () => gsap.to(el, {
+                ...from, duration: 0.6, ease: 'power2.in', overwrite: true
+            })
+        });
+    });
+}
+
+function initShapesParallax() {
+    const shapes = document.querySelectorAll('.floating-shapes .shape');
+    if (!shapes.length) return;
+    const movers = Array.from(shapes).map((shape, i) => ({
+        x: gsap.quickTo(shape, 'x', { duration: 0.9, ease: 'power3.out' }),
+        y: gsap.quickTo(shape, 'y', { duration: 0.9, ease: 'power3.out' }),
+        depth: ((i % 3) + 1) * 12
+    }));
+
+    window.addEventListener('mousemove', (e) => {
+        const dx = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+        const dy = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+        movers.forEach(({ x, y, depth }) => {
+            x(dx * depth);
+            y(dy * depth);
+        });
+    });
+}
+
+function initHeroTilt() {
+    const wrap = document.querySelector('.hero-tilt-wrap');
+    const heroSection = document.querySelector('.hero');
+    if (!wrap || !heroSection) return;
+
+    const rotX = gsap.quickTo(wrap, 'rotationX', { duration: 0.6, ease: 'power3.out' });
+    const rotY = gsap.quickTo(wrap, 'rotationY', { duration: 0.6, ease: 'power3.out' });
+
+    heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        rotY(px * 22);
+        rotX(-py * 22);
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
+        rotX(0);
+        rotY(0);
+    });
+}
+
+function initSkillIconLoop() {
+    document.querySelectorAll('.skill-icon').forEach((icon, i) => {
+        gsap.set(icon, { transformPerspective: 500 });
+        const tween = gsap.to(icon, {
+            rotateY: 360,
+            duration: 9 + (i % 3) * 1.5,
+            repeat: -1,
+            ease: 'linear'
+        });
+        iconLoopTweens.push(tween);
+
+        const card = icon.closest('.skill-card');
+        if (card) {
+            card.addEventListener('mouseenter', () => gsap.to(tween, { timeScale: 4, duration: 0.3 }));
+            card.addEventListener('mouseleave', () => gsap.to(tween, { timeScale: 1, duration: 0.6 }));
+        }
+    });
+}
+
+function startCinematicMotion() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    if (!motionInitialized) {
+        gsap.registerPlugin(ScrollTrigger);
+        initScrollReveals();
+        initShapesParallax();
+        initHeroTilt();
+        initSkillIconLoop();
+        motionInitialized = true;
+    } else {
+        ScrollTrigger.getAll().forEach(st => st.enable());
+        iconLoopTweens.forEach(t => t.resume());
+    }
+}
+
+function stopCinematicMotion() {
+    if (typeof gsap === 'undefined') return;
+    if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.getAll().forEach(st => st.disable());
+    }
+    gsap.set('[data-aos]', { clearProps: 'transform,opacity' });
+    iconLoopTweens.forEach(t => t.pause());
+}
+
+try {
+    startCinematicMotion();
+} catch (e) {
+    console.warn('Cinematic motion not started:', e);
+}
 
 // Dynamic Year Update
 const currentYear = new Date().getFullYear();
@@ -271,7 +435,6 @@ filterBtns.forEach(btn => {
 
 // Console Easter Egg
 console.log('%c Portfolio AGBALENYO Clement', 'color: #d4af37; font-size: 24px; font-weight: bold;');
-console.log('%c Qui ne tente rien n\'a rien', 'color: #f5e6d3; font-size: 16px; font-style: italic;');
 
 // ==========================================
 // SETTINGS PANEL FUNCTIONALITY
@@ -310,12 +473,10 @@ document.addEventListener('click', (e) => {
 
 // Load saved preferences
 function loadPreferences() {
-    const theme = localStorage.getItem('theme') || 'dark';
     const lang = localStorage.getItem('language') || 'en';
     const animations = localStorage.getItem('animations') !== 'false';
     const smoothScroll = localStorage.getItem('smoothScroll') !== 'false';
 
-    applyTheme(theme);
     applyLanguage(lang);
     document.getElementById('animationsToggle').checked = animations;
     document.getElementById('smoothScrollToggle').checked = smoothScroll;
@@ -325,30 +486,6 @@ function loadPreferences() {
     }
     if (!smoothScroll) {
         disableSmoothScroll();
-    }
-}
-
-// Theme Switcher
-const themeBtns = document.querySelectorAll('.theme-btn');
-themeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const theme = btn.dataset.theme;
-        themeBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        applyTheme(theme);
-        localStorage.setItem('theme', theme);
-    });
-});
-
-function applyTheme(theme) {
-    if (theme === 'light') {
-        document.body.classList.add('light-theme');
-        document.querySelector('.theme-btn[data-theme="light"]').classList.add('active');
-        document.querySelector('.theme-btn[data-theme="dark"]').classList.remove('active');
-    } else {
-        document.body.classList.remove('light-theme');
-        document.querySelector('.theme-btn[data-theme="dark"]').classList.add('active');
-        document.querySelector('.theme-btn[data-theme="light"]').classList.remove('active');
     }
 }
 
@@ -377,19 +514,16 @@ const translations = {
         contact: 'Contact',
 
         // Hero Section
-        heroSubtitle: 'Ingénieur en Génie Mécanique | Innovateur | CEO',
+        heroSubtitle: 'Étudiant en Génie Mécanique | Robotique & Mécatronique',
         heroDescription: 'Je transforme les idées en systèmes mécaniques fonctionnels, efficaces et optimisés.',
         myProjects: 'Mes Projets',
         contactMe: 'Me Contacter',
 
-        // Quote
-        quote: '« Qui ne tente rien n\'a rien »',
-
         // About Section
         aboutTitle: 'À Propos de Moi',
         aboutSubtitle: 'Mon parcours et ma vision',
-        aboutText1: 'Je suis étudiant en génie mécanique à ESIG Global Success, spécialisé en génie mécanique et technologies appliquées.',
-        aboutText2: 'Je suis passionné par la transformation d\'idées en systèmes mécaniques fonctionnels, efficaces et optimisés. Mon travail combine précision technique, créativité et résolution de problèmes, avec un accent constant sur les applications du monde réel.',
+        aboutText1: 'Je suis AGBALENYO Kokou Clement, étudiant en génie mécanique et mécatronique à ESIG Global Success, actuellement en Licence 2. Je me spécialise en conception mécanique (CAO), simulation numérique (FEA) et intégration de systèmes robotiques.',
+        aboutText2: 'Mon travail combine précision technique et résolution de problèmes concrets : de la modélisation 3D sous SolidWorks à la simulation structurelle sous ANSYS et Abaqus, en passant par la conception de systèmes mécatroniques et robotiques automatisés.',
         downloadCV: 'Télécharger mon CV',
 
         // Education Section
@@ -414,30 +548,30 @@ const translations = {
         skill2Desc: 'Analyse structurelle et thermique avec ANSYS et Abaqus',
         skill3Title: 'Mécatronique',
         skill3Desc: 'Intégration robotique, automatisation et systèmes intelligents',
-        skill4Title: 'Beatmaking',
-        skill4Desc: 'Production musicale et direction artistique avec Nova Luz',
-        skill5Title: 'Formation',
-        skill5Desc: 'Instruction technique et transfert de connaissances en ingénierie',
-        skill6Title: 'Gestion de Projet',
-        skill6Desc: 'Leadership d\'équipe et gestion de projets complexes',
+        skill4Title: 'Formation',
+        skill4Desc: 'Instruction technique et transfert de connaissances en ingénierie',
+        skill5Title: 'Gestion de Projet',
+        skill5Desc: 'Leadership d\'équipe et gestion de projets complexes',
 
         // Projects Section
         projectsTitle: 'Mes Projets',
         projectsSubtitle: 'Réalisations marquantes',
         project1Title: 'Bras Robotique Intelligent',
-        project1Desc: 'Développement d\'un système de bras robotique multi-axes avec contrôle intelligent, intégrant des capteurs et une automatisation avancée.',
-        project2Title: 'Black Hole (Blender)',
-        project2Desc: 'Projet de modélisation 3D et rendu explorant l\'éclairage réaliste, la distorsion et les effets spatiaux cinématiques.',
-        project3Title: 'Nova Luz (Label Musical)',
-        project3Desc: 'Fondateur et directeur créatif de Nova Luz, produisant de la musique et gérant des projets artistiques.',
-        project4Title: 'Application Gestion Atelier ESIG',
-        project4Desc: 'Création d\'une application pour rationaliser la gestion de projets et d\'outils dans l\'atelier de l\'école ESIG.',
-        project5Title: 'NESSO - Entreprise d\'Innovation',
-        project5Desc: 'Fondateur et CEO de NESSO, entreprise axée sur le développement de solutions technologiques avancées en génie mécanique.',
-        project6Title: 'Assemblage Mécanique Final',
-        project6Desc: 'Vidéo démonstrant le processus d\'assemblage mécanique complet d\'un projet, de la conception CAO à la réalisation finale.',
-        project7Title: 'RelaxVest - Gilet de Massage Intelligent',
-        project7Desc: 'Conception et développement d\'un gilet de massage connecté avec application mobile de contrôle Bluetooth. Chef de projet, développeur de l\'application et concepteur du produit, du prototype à la livraison finale.',
+        project1Desc: 'Chef de projet — conception complète d\'un bras robotique articulé (Semaine de Professionnalisation 2026) : CAO SolidWorks, calculs statiques et dynamiques, cinématique directe et inverse vérifiée numériquement (erreur < 0,001 mm), dimensionnement moteur NEMA 17 + réducteur.',
+        project2Title: 'CNC & Atelier — Diagnostic et Outillage',
+        project2Desc: 'Diagnostic et réparation de machines CNC (tourelle du tour, alarmes fraiseuse), pipeline de programmation Fusion 360 → contrôleur GSK, et développement d\'un validateur de G-code en Python (Tkinter, packagé en .exe) diffusé et utilisé par l\'équipe atelier — SAE 401.',
+        project3Title: 'Black Hole (Blender)',
+        project3Desc: 'Modélisation et rendu 3D sous Blender : shading procédural, éclairage volumétrique et simulation visuelle de la distorsion gravitationnelle pour un rendu cinématique réaliste.',
+        project4Title: 'Essai de Traction — Analyse de Matériaux',
+        project4Desc: 'Analyse de 442 points de données expérimentales sur éprouvette cylindrique : classeur Excel à 6 feuilles avec formules inter-feuilles, courbes contrainte-déformation, calcul du module d\'Young, Rm, Rp0.2, allongement et striction.',
+        project5Title: 'Application Gestion Atelier ESIG',
+        project5Desc: 'PWA de gestion d\'atelier avec intégration Google Sheets, authentification par rôle et mode visiteur — développée pour le suivi des TP, des outils et des machines de l\'atelier ESIG.',
+        project6Title: 'Appui Mémoire — Plumeuse Rotative de Volaille',
+        project6Desc: 'Appui technique à un mémoire de fin d\'études : nomenclature (BOM), calculs de vérification, séquence de modélisation SolidWorks et visualisation 3D interactive sous Three.js.',
+        project7Title: 'Assemblage Mécanique Final',
+        project7Desc: 'Vidéo documentant le processus complet d\'assemblage sous SolidWorks, de la mise en plan des pièces à la vérification des tolérances et l\'intégration finale de l\'ensemble.',
+        project8Title: 'RelaxVest - Gilet de Massage Intelligent',
+        project8Desc: 'Conception mécanique du boîtier et de la structure, développement de l\'application mobile de contrôle Bluetooth. Gestion de projet de bout en bout, du prototype fonctionnel à la livraison finale.',
 
         // Gallery Section
         galleryTitle: 'Galerie Photos',
@@ -450,14 +584,10 @@ const translations = {
         exp1Title: 'Chef de Projet',
         exp1Company: 'Projets Académiques',
         exp1Desc: 'Direction de multiples projets d\'ingénierie scolaires, coordination d\'équipes, gestion des délais et livraison de solutions techniques. Conception et livraison d\'un gilet de massage personnalisé, du concept au prototype fonctionnel.',
-        exp2Year: '2025',
-        exp2Title: 'Fondateur',
-        exp2Company: 'Nova Luz (Label Musical)',
-        exp2Desc: 'Fondation et gestion d\'un label musical indépendant, supervision de projets créatifs et coordination d\'équipe.',
-        exp3Year: '2026',
-        exp3Title: 'CEO',
-        exp3Company: 'NESSO',
-        exp3Desc: 'Direction d\'une entreprise axée sur l\'innovation et le développement de solutions d\'ingénierie, incluant le développement d\'un projet de bras robotique intelligent.',
+        exp2Year: '2026',
+        exp2Title: 'Technicien Atelier & Développeur d\'Outils',
+        exp2Company: 'SAE 401 — Atelier ESIG',
+        exp2Desc: 'Diagnostic et réparation de machines CNC, mise en place d\'un pipeline de programmation Fusion 360 → GSK, et développement d\'un validateur de G-code en Python diffusé à toute l\'équipe. Cahier des charges, entretiens et rapports d\'activité livrés.',
 
         // Contact Section
         contactTitle: 'Contactez-Moi',
@@ -478,19 +608,16 @@ const translations = {
         contact: 'Contact',
 
         // Hero Section
-        heroSubtitle: 'Mechanical Engineer | Innovator | CEO',
+        heroSubtitle: 'Mechanical Engineering Student | Robotics & Mechatronics',
         heroDescription: 'I transform ideas into functional, efficient, and optimized mechanical systems.',
         myProjects: 'My Projects',
         contactMe: 'Contact Me',
 
-        // Quote
-        quote: '"Nothing ventured, nothing gained"',
-
         // About Section
         aboutTitle: 'About Me',
         aboutSubtitle: 'My journey and vision',
-        aboutText1: 'I am a mechanical engineering student at ESIG Global Success, specializing in mechanical engineering and applied technologies.',
-        aboutText2: 'I am passionate about transforming ideas into functional, efficient, and optimized mechanical systems. My work combines technical precision, creativity, and problem-solving, with a constant focus on real-world applications.',
+        aboutText1: 'I am AGBALENYO Kokou Clement, a mechanical and mechatronics engineering student at ESIG Global Success, currently in my second year. I specialize in mechanical design (CAD), numerical simulation (FEA), and robotic systems integration.',
+        aboutText2: 'My work combines technical precision with real-world problem-solving: from 3D modeling in SolidWorks to structural simulation in ANSYS and Abaqus, through the design of automated mechatronic and robotic systems.',
         downloadCV: 'Download CV',
 
         // Education Section
@@ -515,30 +642,30 @@ const translations = {
         skill2Desc: 'Structural and thermal analysis with ANSYS and Abaqus',
         skill3Title: 'Mechatronics',
         skill3Desc: 'Robotic integration, automation and intelligent systems',
-        skill4Title: 'Beatmaking',
-        skill4Desc: 'Music production and artistic direction with Nova Luz',
-        skill5Title: 'Training',
-        skill5Desc: 'Technical instruction and knowledge transfer in engineering',
-        skill6Title: 'Project Management',
-        skill6Desc: 'Team leadership and complex project management',
+        skill4Title: 'Training',
+        skill4Desc: 'Technical instruction and knowledge transfer in engineering',
+        skill5Title: 'Project Management',
+        skill5Desc: 'Team leadership and complex project management',
 
         // Projects Section
         projectsTitle: 'My Projects',
         projectsSubtitle: 'Notable achievements',
         project1Title: 'Intelligent Robotic Arm',
-        project1Desc: 'Development of a multi-axis robotic arm system with intelligent control, integrating sensors and advanced automation.',
-        project2Title: 'Black Hole (Blender)',
-        project2Desc: '3D modeling and rendering project exploring realistic lighting, distortion and cinematic spatial effects.',
-        project3Title: 'Nova Luz (Music Label)',
-        project3Desc: 'Founder and creative director of Nova Luz, producing music and managing artistic projects.',
-        project4Title: 'ESIG Workshop Management App',
-        project4Desc: 'Creating an application to streamline project and tool management in the ESIG school workshop.',
-        project5Title: 'NESSO - Innovation Company',
-        project5Desc: 'Founder and CEO of NESSO, a company focused on developing advanced technological solutions in mechanical engineering.',
-        project6Title: 'Final Mechanical Assembly',
-        project6Desc: 'Video demonstrating the complete mechanical assembly process of a project, from CAD design to final realization.',
-        project7Title: 'RelaxVest - Smart Massage Vest',
-        project7Desc: 'Design and development of a connected massage vest with a Bluetooth mobile control app. Project leader, app developer and product designer, from prototype to final delivery.',
+        project1Desc: 'Project lead — full design of an articulated robotic arm (Professionalization Week 2026): SolidWorks CAD, static and dynamic calculations, forward and inverse kinematics numerically verified (error < 0.001 mm), NEMA 17 motor + gearbox sizing.',
+        project2Title: 'CNC & Workshop — Diagnostics and Tooling',
+        project2Desc: 'Diagnosis and repair of CNC machines (lathe turret, mill alarms), Fusion 360 to GSK controller programming pipeline, and development of a G-code validator in Python (Tkinter, packaged as .exe) shared with and used by the workshop team — SAE 401.',
+        project3Title: 'Black Hole (Blender)',
+        project3Desc: '3D modeling and rendering in Blender: procedural shading, volumetric lighting and visual simulation of gravitational distortion for a realistic cinematic render.',
+        project4Title: 'Tensile Test — Materials Analysis',
+        project4Desc: 'Analysis of 442 experimental data points on a cylindrical specimen: 6-sheet Excel workbook with cross-sheet formulas, stress-strain curves, calculation of Young\'s modulus, Rm, Rp0.2, elongation and necking.',
+        project5Title: 'ESIG Workshop Management App',
+        project5Desc: 'Workshop management PWA with Google Sheets integration, role-based authentication and visitor mode — built to track labs, tools and machines in the ESIG workshop.',
+        project6Title: 'Thesis Support — Rotary Poultry Plucker',
+        project6Desc: 'Technical support for a graduation thesis: bill of materials (BOM), verification calculations, SolidWorks modeling sequence and interactive 3D visualization in Three.js.',
+        project7Title: 'Final Mechanical Assembly',
+        project7Desc: 'Video documenting the complete assembly process in SolidWorks, from part drawings to tolerance verification and final integration of the assembly.',
+        project8Title: 'RelaxVest - Smart Massage Vest',
+        project8Desc: 'Mechanical design of the housing and structure, development of the Bluetooth mobile control app. End-to-end project management, from functional prototype to final delivery.',
 
         // Gallery Section
         galleryTitle: 'Photo Gallery',
@@ -551,14 +678,10 @@ const translations = {
         exp1Title: 'Project Manager',
         exp1Company: 'Academic Projects',
         exp1Desc: 'Direction of multiple school engineering projects, team coordination, deadline management and delivery of technical solutions. Design and delivery of a custom massage vest, from concept to functional prototype.',
-        exp2Year: '2025',
-        exp2Title: 'Founder',
-        exp2Company: 'Nova Luz (Music Label)',
-        exp2Desc: 'Foundation and management of an independent music label, supervision of creative projects and team coordination.',
-        exp3Year: '2026',
-        exp3Title: 'CEO',
-        exp3Company: 'NESSO',
-        exp3Desc: 'Leading a company focused on innovation and development of engineering solutions, including the development of an intelligent robotic arm project.',
+        exp2Year: '2026',
+        exp2Title: 'Workshop Technician & Tool Developer',
+        exp2Company: 'SAE 401 — ESIG Workshop',
+        exp2Desc: 'Diagnosis and repair of CNC machines, set-up of a Fusion 360 to GSK programming pipeline, and development of a Python G-code validator shared with the whole team. Delivered specifications, interviews and activity reports.',
 
         // Contact Section
         contactTitle: 'Contact Me',
@@ -606,11 +729,6 @@ function applyLanguage(lang) {
     // Hero Label
     const heroLabel = document.querySelector('.hero-label');
     if (heroLabel) heroLabel.textContent = lang === 'fr' ? 'Bienvenue sur mon Portfolio' : 'Welcome to my Portfolio';
-
-    // Quote Section
-    setText('.quote-text', t.quote);
-    const quoteAuthor = document.querySelector('.quote-author');
-    if (quoteAuthor) quoteAuthor.textContent = lang === 'fr' ? '— Ma citation préférée' : '— My favorite quote';
 
     // About Section
     setText('#about .section-title', t.aboutTitle);
@@ -661,8 +779,7 @@ function applyLanguage(lang) {
         { title: t.skill2Title, desc: t.skill2Desc },
         { title: t.skill3Title, desc: t.skill3Desc },
         { title: t.skill4Title, desc: t.skill4Desc },
-        { title: t.skill5Title, desc: t.skill5Desc },
-        { title: t.skill6Title, desc: t.skill6Desc }
+        { title: t.skill5Title, desc: t.skill5Desc }
     ];
     skillCards.forEach((card, i) => {
         if (skillData[i]) {
@@ -685,7 +802,8 @@ function applyLanguage(lang) {
         { title: t.project4Title, desc: t.project4Desc },
         { title: t.project5Title, desc: t.project5Desc },
         { title: t.project6Title, desc: t.project6Desc },
-        { title: t.project7Title, desc: t.project7Desc }
+        { title: t.project7Title, desc: t.project7Desc },
+        { title: t.project8Title, desc: t.project8Desc }
     ];
     projectSlides.forEach((slide, i) => {
         if (projData[i]) {
@@ -708,8 +826,7 @@ function applyLanguage(lang) {
         'Simulation d\'un fluide sur Blender', 'Simulation moteur sur SolidWorks',
         'Design d\'un vélo sur SolidWorks', 'Projet Mécanique - Vidéo',
         'ANSYS Certification', 'AGBALENYO Clement - Ansys Certification',
-        'Nova Luz - Label Musical', 'Application Gestion Atelier ESIG',
-        'NESSO - Business Presentation', 'Formation & Instruction',
+        'Application Gestion Atelier ESIG', 'Formation & Instruction',
         'RelaxVest - Application Mobile', 'RelaxVest - Interface de Contrôle',
         'RelaxVest - Prototype Électronique', 'RelaxVest - Équipe & Produit Final'
     ];
@@ -719,8 +836,7 @@ function applyLanguage(lang) {
         'Fluid Simulation on Blender', 'Motor Simulation on SolidWorks',
         'Bicycle Design on SolidWorks', 'Mechanical Project - Video',
         'ANSYS Certification', 'AGBALENYO Clement - Ansys Certification',
-        'Nova Luz - Music Label', 'ESIG Workshop Management App',
-        'NESSO - Business Presentation', 'Training & Instruction',
+        'ESIG Workshop Management App', 'Training & Instruction',
         'RelaxVest - Mobile App', 'RelaxVest - Control Interface',
         'RelaxVest - Electronic Prototype', 'RelaxVest - Team & Final Product'
     ];
@@ -736,8 +852,7 @@ function applyLanguage(lang) {
     const expCards = document.querySelectorAll('.experience-card');
     const expData = [
         { year: t.exp1Year, title: t.exp1Title, company: t.exp1Company, desc: t.exp1Desc },
-        { year: t.exp2Year, title: t.exp2Title, company: t.exp2Company, desc: t.exp2Desc },
-        { year: t.exp3Year, title: t.exp3Title, company: t.exp3Company, desc: t.exp3Desc }
+        { year: t.exp2Year, title: t.exp2Title, company: t.exp2Company, desc: t.exp2Desc }
     ];
     expCards.forEach((card, i) => {
         if (expData[i]) {
@@ -755,14 +870,6 @@ function applyLanguage(lang) {
     // Contact Section
     setText('#contact .section-title', t.contactTitle);
     setText('#contact .section-subtitle', t.contactSubtitle);
-
-    // Footer Banner
-    const bannerQuote = document.querySelector('.footer-banner-quote');
-    if (bannerQuote) {
-        bannerQuote.innerHTML = lang === 'fr'
-            ? 'Qui ne tente rien <span>n\'a rien</span>'
-            : 'Nothing ventured, <span>nothing gained</span>';
-    }
 
     // Contact cards info
     const contactCards = document.querySelectorAll('.contact-card');
@@ -799,12 +906,12 @@ document.getElementById('animationsToggle').addEventListener('change', function 
 
 function disableAnimations() {
     document.body.style.setProperty('--animation-duration', '0s');
-    AOS.init({ duration: 0, once: false });
+    stopCinematicMotion();
 }
 
 function enableAnimations() {
     document.body.style.removeProperty('--animation-duration');
-    AOS.init({ duration: 1000, once: true, offset: 100 });
+    startCinematicMotion();
 }
 
 // Smooth Scroll Toggle
