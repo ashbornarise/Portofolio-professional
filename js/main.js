@@ -822,6 +822,7 @@ function applyLanguage(lang) {
     const galleryCaptions = document.querySelectorAll('.gallery-caption');
     const captionsFr = [
         'Bras Robotique - Pitch Interuniversitaire', 'Projet Bras Robotique - Partenaires',
+        'Bras Robotique - Semaine de Professionnalisation',
         'Black Hole - Modélisation 3D Blender', 'Design d\'une ville futuriste',
         'Simulation d\'un fluide sur Blender', 'Simulation moteur sur SolidWorks',
         'Design d\'un vélo sur SolidWorks',
@@ -832,6 +833,7 @@ function applyLanguage(lang) {
     ];
     const captionsEn = [
         'Robotic Arm - Inter-University Pitch', 'Robotic Arm Project - Partners',
+        'Robotic Arm - Professionalization Week',
         'Black Hole - 3D Modeling Blender', 'Futuristic City Design',
         'Fluid Simulation on Blender', 'Motor Simulation on SolidWorks',
         'Bicycle Design on SolidWorks',

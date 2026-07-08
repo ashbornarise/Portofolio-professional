@@ -20,7 +20,9 @@
       "Bash(node --check js/main.js)",
       "Bash(pkill -f \"http.server 8793\")",
       "Bash(node \"C:\\\\Users\\\\agbal\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-agbal-OneDrive-Documents-GitHub-Portofolio-professional\\\\6096f197-3fa2-40ec-8447-03aae2b18784\\\\scratchpad\\\\check_html.js\" index.html)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
