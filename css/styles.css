@@ -966,6 +966,32 @@
             z-index: 10;
         }
 
+        .timeline-header-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-logo {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+            object-fit: contain;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 6px;
+            flex-shrink: 0;
+        }
+
+        .timeline-header-row .timeline-year {
+            margin-bottom: 4px;
+        }
+
+        .timeline-header-row .timeline-title {
+            margin-bottom: 0;
+        }
+
         .timeline-year {
             font-size: 24px;
             font-weight: 700;
