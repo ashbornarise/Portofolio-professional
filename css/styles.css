@@ -984,6 +984,10 @@
             flex-shrink: 0;
         }
 
+        .timeline-logo.timeline-logo-on-dark {
+            background: var(--accent-gold);
+        }
+
         .timeline-header-row .timeline-year {
             margin-bottom: 4px;
         }
