@@ -153,10 +153,12 @@
         <div class="about-grid">
             <div class="about-text" data-aos="fade-right">
                 <p>
-                    Je suis AGBALENYO Kokou Clement, étudiant en génie mécanique et mécatronique à
-                    ESIG Global Success, actuellement en Licence 2. Je me spécialise en conception
-                    mécanique assistée par ordinateur (CAO), simulation numérique par éléments finis
-                    (FEA) et intégration de systèmes robotiques.
+                    Je suis AGBALENYO Kokou Clement, étudiant en génie mécanique et mécatronique.
+                    Après deux ans à ESIG Global Success (Togo), je poursuis aujourd'hui mes études
+                    en France, en Semestre 5 du BUT Génie Mécanique et Productique (GMP) à l'IUT de
+                    Saint-Denis, parcours Simulation Numérique et Réalité Virtuelle. Je me spécialise
+                    en conception mécanique assistée par ordinateur (CAO), simulation numérique par
+                    éléments finis (FEA), réalité virtuelle et intégration de systèmes robotiques.
                 </p>
                 <p>
                     Mon travail combine précision technique et résolution de problèmes concrets :
@@ -253,6 +255,23 @@
                 </div>
                 <div class="timeline-dot"></div>
             </div>
+
+            <div class="timeline-item" data-aos="fade-up">
+                <div class="timeline-content">
+                    <div class="timeline-year">2026</div>
+                    <div class="timeline-title">IUT DE SAINT-DENIS — FRANCE</div>
+                    <div class="timeline-badge">BUT GMP - Semestre 5 - Simulation Numérique & Réalité Virtuelle</div>
+                    <div class="timeline-description">
+                        <p>Poursuite d'études en France après deux ans à ESIG Global Success (Togo) :</p>
+                        <ul>
+                            <li>Parcours Simulation Numérique et Réalité Virtuelle</li>
+                            <li>Projet de spécialisation : main prothétique connectée (CAO, EMG, ESP32)</li>
+                            <li>Approfondissement CAO, simulation par éléments finis et réalité virtuelle</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
         </div>
     </section>
 
@@ -273,9 +292,10 @@
 
             <div class="skill-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="skill-icon"><i class="fas fa-calculator"></i></div>
-                <h3 class="skill-title">Simulation FEA</h3>
+                <h3 class="skill-title">Simulation FEA & Réalité Virtuelle</h3>
                 <p class="skill-description">
-                    Expertise en ANSYS, Abaqus pour l'analyse et l'optimisation de structures
+                    Expertise en ANSYS, Abaqus pour l'analyse et l'optimisation de structures, et
+                    spécialisation en simulation numérique et réalité virtuelle (BUT GMP)
                 </p>
             </div>
 
@@ -341,15 +361,36 @@
                         <h3 class="project-title">CNC & Atelier — Diagnostic et Outillage</h3>
                         <p class="project-description">
                             Diagnostic et réparation de machines CNC (tourelle du tour, alarmes fraiseuse),
-                            pipeline de programmation Fusion 360 → contrôleur GSK, et développement d'un
+                            pipeline de programmation Fusion 360 → contrôleur GSK, développement d'un
                             validateur de G-code en Python (Tkinter, packagé en .exe) diffusé et utilisé
-                            par l'équipe atelier — SAE 401.
+                            par l'équipe atelier, et d'un simulateur de tour CNC GSK980TB3 avec détection
+                            automatique de collision — SAE 401 / stage atelier ESIG 2CIT.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">CNC</span>
                             <span class="project-tag">Python</span>
                             <span class="project-tag">G-code</span>
                             <span class="project-tag">Maintenance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2b: ATRME Bobinage -->
+                <div class="swiper-slide">
+                    <img src="images/atrme_liste_fiches.png" alt="Application Gestion Bobinage ATRME" class="project-image">
+                    <div class="project-content">
+                        <h3 class="project-title">App ATRME — Gestion des Fiches de Bobinage</h3>
+                        <p class="project-description">
+                            Digitalisation de la fiche papier de bobinage de l'atelier ATRME : saisie,
+                            recherche/historique, génération automatique du schéma de bobinage (SVG) et
+                            de rapports PDF avec photos de la plaque signalétique. Packagée en exécutable
+                            autonome (PyInstaller) et installée sur poste atelier.
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">Python</span>
+                            <span class="project-tag">Électromécanique</span>
+                            <span class="project-tag">Maintenance</span>
+                            <span class="project-tag">Desktop App</span>
                         </div>
                     </div>
                 </div>
@@ -666,6 +707,36 @@
                 </div>
                 <div class="gallery-zoom-icon"><i class="fas fa-search-plus"></i></div>
             </div>
+
+            <div class="gallery-item" data-category="projets" data-aos="fade-up"
+                onclick="openLightbox('images/atrme_liste_fiches.png')">
+                <img src="images/atrme_liste_fiches.png" alt="App ATRME - Liste des fiches de bobinage" loading="lazy">
+                <div class="gallery-overlay">
+                    <span class="gallery-category-tag">Projet</span>
+                    <div class="gallery-caption">App ATRME - Gestion des Fiches de Bobinage</div>
+                </div>
+                <div class="gallery-zoom-icon"><i class="fas fa-search-plus"></i></div>
+            </div>
+
+            <div class="gallery-item" data-category="projets" data-aos="fade-up"
+                onclick="openLightbox('images/atrme_fiche_detail.png')">
+                <img src="images/atrme_fiche_detail.png" alt="App ATRME - Détail d'une fiche" loading="lazy">
+                <div class="gallery-overlay">
+                    <span class="gallery-category-tag">Projet</span>
+                    <div class="gallery-caption">App ATRME - Détail Fiche & Schéma de Bobinage</div>
+                </div>
+                <div class="gallery-zoom-icon"><i class="fas fa-search-plus"></i></div>
+            </div>
+
+            <div class="gallery-item" data-category="projets" data-aos="fade-up"
+                onclick="openLightbox('images/simulateur_tour_cnc_vue2d.jpeg')">
+                <img src="images/simulateur_tour_cnc_vue2d.jpeg" alt="Simulateur Tour CNC GSK980TB3" loading="lazy">
+                <div class="gallery-overlay">
+                    <span class="gallery-category-tag">Projet</span>
+                    <div class="gallery-caption">Simulateur Tour CNC GSK980TB3 - Détection de Collision</div>
+                </div>
+                <div class="gallery-zoom-icon"><i class="fas fa-search-plus"></i></div>
+            </div>
         </div>
     </section>
 
@@ -727,9 +798,10 @@
                     <div class="experience-company">SAE 401 — Atelier ESIG</div>
                     <p class="experience-description">
                         Diagnostic et réparation de machines CNC, mise en place d'un pipeline de
-                        programmation Fusion 360 → GSK, et développement d'un validateur de G-code en
-                        Python diffusé à toute l'équipe. Cahier des charges, entretiens et rapports
-                        d'activité livrés.
+                        programmation Fusion 360 → GSK, développement d'un validateur de G-code et d'un
+                        simulateur de tour CNC (détection de collision) diffusés à toute l'équipe, ainsi
+                        qu'une application de gestion des fiches de bobinage pour l'atelier ATRME.
+                        Cahier des charges, entretiens et rapports d'activité livrés.
                     </p>
                 </div>
 
@@ -742,7 +814,7 @@
         <div class="stats-grid">
             <div class="stat-card" data-aos="zoom-in" data-aos-delay="0">
                 <i class="fas fa-project-diagram stat-icon"></i>
-                <div class="stat-number" data-target="15">0</div>
+                <div class="stat-number" data-target="16">0</div>
                 <div class="stat-label">Projets Réalisés</div>
             </div>
             <div class="stat-card" data-aos="zoom-in" data-aos-delay="100">
